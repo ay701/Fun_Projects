@@ -1,5 +1,9 @@
 <?php
 
+/**
+* Design a 52 cards Deck game
+*/
+
 class Deck{
 
 	public $cards = array();
