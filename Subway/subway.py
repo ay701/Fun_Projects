@@ -1,12 +1,12 @@
 ############################################################################################
-# Pave Loan Interview
 # Design NYC subway system, find shortest path between two stops
 # Imagine subway system as a graph, adding lines is equal to adding edges & nodes
 # Use Dijkstra's algorithm to calculate the shortest paths
 # Use heap to keep shortest time
 # Use back-trace to find out shortest path
 # Authour: ay701@nyu.edu
-# Date: 2016-09-04 
+# Created: 2016-09-04 
+# Updated: 2016-11-14 
 ############################################################################################
 
 import sys
