@@ -1,9 +1,12 @@
 ############################################################################################
-# Design NYC subway system, find shortest path between two stops
+# Design a NYC subway system, to find shortest path between two stops
+# 
+# Brainstorm:
 # Imagine subway system as a graph, adding lines is equal to adding edges & nodes
-# Use Dijkstra's algorithm to calculate the shortest paths
-# Use heap to keep shortest time
-# Use back-trace to find out shortest path
+# 1. Use Dijkstra's algorithm to calculate the shortest paths
+# 2. Use heap to keep the shortest time
+# 3. Use back-trace to find out shortest path
+#
 # Authour: ay701@nyu.edu
 # Created: 2016-09-04 
 # Updated: 2016-11-14 
