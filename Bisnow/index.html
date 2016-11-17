@@ -13,12 +13,13 @@
 $(document).ready(function() {
     $('form').submit(function(event) { //Trigger on form submit
 
+        // Submit to show loading gif
     	setTimeout( function(){
     			$('#gif').css('visibility', 'visible'); 
     		}, 2000 );
 
-        $('#error').empty(); //Clear the messages first
-        $('#message').empty();
+        $('#error').empty(); //Clear the error first
+        $('#message').empty(); //And the message too
 
         var postForm = { //Fetch form data
             'data'     : $('input[name=data]').val() //Store name fields value
@@ -63,7 +64,7 @@ $(document).ready(function() {
 		  <input type="submit" value="submit">
 		  <span id="error"></span>
 		  <span id="success"></span>
-		  <img src="loading.gif" id="gif" visibility="hidden">
+		  <img src="loading.gif" id="gif" style="visibility:hidden">
 		  <br>
 		</form>
 
