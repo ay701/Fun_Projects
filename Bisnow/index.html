@@ -12,6 +12,11 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $('form').submit(function(event) { //Trigger on form submit
+
+    	setTimeout( function(){
+    			$('#gif').css('visibility', 'visible'); 
+    		}, 2000 );
+
         $('#error').empty(); //Clear the messages first
         $('#message').empty();
 
@@ -33,7 +38,10 @@ $(document).ready(function() {
                                 }
                             }
         });
+        
         event.preventDefault(); //Prevent the default submit
+
+        return true;
     });
 });
 </script>
@@ -55,6 +63,7 @@ $(document).ready(function() {
 		  <input type="submit" value="submit">
 		  <span id="error"></span>
 		  <span id="success"></span>
+		  <img src="loading.gif" id="gif" visibility="hidden">
 		  <br>
 		</form>
 
