@@ -1,0 +1,115 @@
+1) You send roughly 30 emails monthly through an email infrastructure service similar to SendGrid and Mandrill, called SparkPost.  SparkPost sends the message events associated with those email sends back to you via a post web hook so you can store and utilize them at a later date. Attached to this email is an example json body that you would receive from Sparkpost. You can read a description of the events included in this json here: https://support.sparkpost.com/customer/portal/articles/1976204-webhook-event-reference.
+
+Please describe the full stack of technologies you would use to receive the http requests webhook, process and store the data, and query these records in a meaningful way in the future. 
+
+Which fields seem like they would be important for customer analytics? Which might be important for other reasons? What reasons?
+
+Answer:
+
+I would create an PHP script to monitor, receive and process the http requests webhook. Once the PHP script received JSON object, it will pass and store it to DB. Since the event descriptions are in JSON format, I would prefer to use NoSQL DB like MongoDB for the data storage. I also want to create an REST web service (like - PHP Mirco Slim) for data query.
+
+According to the table, "customer_id", "ip_address", "rcpt_meta", "rcpt_tags", "rcpt_to", "geo_ip" fields are important for cutomer analytics. Fields "event_id" and "campaign_id" would be important to figure out what type of events/campaigns customers are associated.
+
+2) The following two questions do not necessarily have a specific right or wrong answer, thus the how and why are important. What type of class or OOP programming structure would make sense to use in the following scenarios? How and Why?
+
+2a. You are building an open source application framework, to handle sessions you would like to use Memcache by default but allow others to create modules for other session handling services.
+
+Answer:
+Use session_module_name() function to set the Session Module at site or script level.
+
+The global configuration can be done in php.ini under the [Session] section and with the name of "session.save_handler". The sessions are saved in files by default, like so:
+session.save_handler = files
+
+But with this configuration you set one of your websites to use some other session module (if you have them installed and extension loaded with PHP), like so:
+<?php
+
+// NOTE: You must use this function before starting session with session_start(); to make it work properly
+session_module_name('memcache'); // or pgsql or redis etc
+
+// You'll need to define a save path also, if the module is other than files, like so:
+session_save_path('localhost:11211'); // memcache uses port 11211
+
+// or you can use multiple for load balancing:
+session_save_path('localhost:11211:41,otherhost:11211:60') // First part is hostname or path to socket, next is port and the last is the weight for that server
+
+//The function also returns the value of the current session module.
+echo session_module_name(); // will print memcache in our case
+
+// or maybe a check
+if(session_module_name() != 'memcache'){
+  // Do something, throw an exception maybe
+}
+
+(Reference : http://php.net/manual/en/function.session-module-name.php)
+
+2b. You have many classes which need to share some methods, some of these classes already extend another unrelated class, some do not.
+
+Answer:
+
+Use traits
+
+3) You have a Mysql table with 500 Million rows. The structure is the following:
+
+CREATE TABLE `buildings` (
+
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+
+ `name` varchar(255) NOT NULL,
+
+ `type` enum('Highrise','Lowrise','Retail','Industrial') NOT NULL,
+
+`city` varchar(100) NOT NULL,
+
+ PRIMARY KEY (`id`)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+A sample query that would often need to run on the database is “SELECT * FROM posts WHERE type = ? AND city = ? LIMIT 500000”. Would you add an index or indices to this table other than the primary index? What are the pros and cons of doing so?
+
+Assuming there are no other related tables or different querying scenarios, do you think mysql is an optimal approach here? Why or why not and what might an alternative be?
+
+Answer:
+
+I will create an index on "type" and "city" columns (if there is enough memory)
+Creating index (mostly) will speed up the select query, but it slows down inserts, updates and deletes because the database engine does not have to write the data only, but the index, too. An index need space on hard disk (and much more important) in RAM. An index that cannot be held in RAM is pretty useless. So an index on a column with only a few different values doesn't speed up selects, because it cannot sort out much rows (for example the column "city", which usually has only four different values - 'Highrise','Lowrise','Retail','Industrial').  But in our case, 500 millon rows are not huge, and we should rarely update and delete the columns which we created the index.
+
+Also, we can check, if the enginge uses an index by adding "explain" before the select - for your above example EXPLAIN SELECT * FROM buildings WHERE type = ? AND city = ?
+
+I would prefer to use NoSQL database like MongoDB, but it depends on if how much periodical growth our data has. We choose NoSQL only if we are trying to solve two main problems: scalability and simplifying the development process (NoSQL is schema free). 
+First of all, NoSQL databases were pioneered by top internet companies like Amazon, Google, LinkedIn and Facebook to deal with big size of data, to overcome the drawbacks of RDBMS like MySQL. RDBMS like MySQL is not always the best solution for all situations as it cannot meet the increasing growth of unstructured data. In our case, if the table keep growing exponentially, NoSQL database is a dynamic and cloud friendly approach to dynamically process unstructured data with ease. 
+Secondly, NoSQL scales horizontally and avoid major join operations on the data.
+Furthermore, NoSQL Databases such as MongoDB, Couchbase and Cassandra, data is stored in the form of flat collections where this a single piece of data is hardly ever partitioned off but rather it is stored in the form of an entity. Hence, reading or writing operations to a single entity have become easier and faster.
+
+4) You have ten thousand strings of data separated by new lines \n in a text document. Contained within each string in no particular order is the following separated by whitespace:
+A first and last name
+A phone number
+An email
+A street address, including a numeric address number, street/avenue name, city and zip
+
+Use php to Make a script which parses the file and separates the above fields from each row, storing them in a SQLite database.
+
+Answer:
+
+Please see Parser.php
+
+5. Setup an HTML page with a header, navigation bar, content section and footer
+	- In the header, center the words "Number Test"
+	- In the navigation bar, have links to Google.com, Bisnow.com
+	- In the footer on the left, place the words "Bisnow Media 2016"
+	- In the footer on the right, place your name
+	
+5a. In the content section, create a form with 1 input field and a submit field
+5b. In the input field, a user will enter a number between 1-1000. The form, using jQuery/AJAX should query a separate PHP file which does the following:
+- Validate the user input
+- If input is a multiple of three, return “Bisnow”
+- If input is a multiple of five, return “Media”
+- If input is a multiple of three and five, return “Bisnow Media“
+- Save the user’s input to a MySQL tracking table
+
+5c. When a user submits the form, the submit button should show a loading graphic. Users cannot submit the form again if input is valid.
+5d. If input is not a number or outside the range, show an error on the form
+5e. If the number is in the range, append the result from step 3 to the beginning of the form
+
+Answer :
+
+Please see index.php, process.php
