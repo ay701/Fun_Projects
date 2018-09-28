@@ -25,7 +25,6 @@ def parser():
 
 
 def build_polygons():
-
     polygons = []
 
     with open("../static/states.json", "r") as json_data:
@@ -46,7 +45,7 @@ def build_polygons():
 def search(polygons, point):
     for polygon in polygons:
         if point_in_polygon(polygon, point):
-            return polygon.state_name
+            return json.dumps([polygon.state_name])
 
         continue
 
