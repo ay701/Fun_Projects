@@ -1,10 +1,12 @@
-# Using Ray-casting algorithm
-# Check if there are even number of horizontal intersections
+# Applied Ray-casting algorithm
+# Look for even number of intersections
+# Check both left and right horizontal directions
 
 from flask import Flask, json, render_template, request
 from models import Polygon, Point, Segment
 
 app = Flask(__name__)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def parser():
@@ -16,7 +18,7 @@ def parser():
         point = Point(longitude, latitude)
         result = search(polygons, point)
 
-        return(result)
+        return result
 
         # Following line is used for testing on web browser
         # return render_template("output.html", polygons=polygons)
@@ -70,14 +72,14 @@ def point_in_polygon(polygon, point):
 
 
 def edges_intersect(e1, e2):
-    A = e1.p1
-    B = e1.p2
-    C = e2.p1
-    D = e2.p2
+    a = e1.p1
+    b = e1.p2
+    c = e2.p1
+    d = e2.p2
 
-    return ccw(A, C, D) != ccw(B, C, D) and ccw(A, B, C) != ccw(A, B, D)
+    return ccw(a, c, d) != ccw(b, c, d) and ccw(a, b, c) != ccw(a, b, d)
 
 
 # Use counter clock wise comparison to check intersect
-def ccw(A, B, C):
-    return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x)
+def ccw(a, b, c):
+    return (c.y - a.y) * (b.x - a.x) > (b.y - a.y) * (c.x - a.x)
