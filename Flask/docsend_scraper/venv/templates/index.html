@@ -7,16 +7,97 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
-
 {% block scripts %}
 {{super()}}
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
 <script>
-      
-$('.btn').on('click', function() {
-  var $this = $(this);
-  $this.button('loading');
+
+//$('.btn').on('click', function() {
+//    var $this = $(this);
+//    $this.prop("disabled",true);
+//  $this.button('loading');
+//});
+
+$(document).ready(function(){
+
+    $('#refresh-button').hide();
+
+    // Use a "/test" namespace.
+    // An application can open a connection on multiple namespaces, and
+    // Socket.IO will multiplex all those connections on a single
+    // physical channel. If you don't care about multiple channels, you
+    // can set the namespace to an empty string.
+    namespace = '/test';
+
+    // Connect to the Socket.IO server.
+    // The connection URL has the following format:
+    // http[s]://<domain>:<port>[/<namespace>]
+    var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+
+    // Event handler for new connections.
+    // The callback function is invoked when a connection with the
+    // server is established.
+    socket.on('connect', function() {
+        socket.emit('my_event', {data: 'I\'m connected!'});
+    });
+
+    // Event handler for server sent data.
+    // The callback function is invoked whenever the server emits data
+    // to the client. The data is then displayed in the "Received"
+    // section of the page.
+    socket.on('my_response', function(msg) {
+        $('#log').append('<br>' + $('<div/>').text(msg.data).html());
+    });
+
+    // Field Message Prompt
+    socket.on('url_response', function(msg) {
+        $('#url_msg').html(msg.message);
+    });
+
+    socket.on('email_response', function(msg) {
+        $('#email_msg').html(msg.message);
+    });
+
+    socket.on('passwd_response', function(msg) {
+        $('#passwd_msg').html(msg.message);
+    });
+
+    $('form#scraper').submit(function(event) {
+        socket.emit('validate_request',
+            {
+                url: $('#url').val(),
+                email_ad: $('#email_ad').val(),
+                email_pass: $('#email_pass').val()
+            });
+        return false;
+    });
+
+    socket.on('disable_load', function() {
+        $('#scrap-button').prop("disabled", true);
+        socket.emit('start_process');
+        return false;
+
+    });
+
+    socket.on('save_pdf', function(msg) {
+        $('#log').html(msg.message);
+        socket.emit('save_pdf');
+        return false;
+    });
+
+    socket.on('refresh_button', function(msg) {
+        $('#log').html(msg.message);
+        $('#refresh-button').show();
+        return false;
+    });
+
+    $("#refresh-button").click(function(){
+        setTimeout(function(){
+            location.reload()
+        }, 5000);
+    });
 });
-  
 </script>
 
 {% endblock %}
@@ -24,27 +105,32 @@ $('.btn').on('click', function() {
 {% block content %}
 <div class="container">
   <h3 align=center>DocSend Scraper (Beta)</h3>
-  <form class="form-horizontal" action="/save_pdf" method="post">
+  <form class="form-horizontal" id="scraper" action="/save_pdf" method="post">
     <div class="form-group">
       <div class="col-sm-12">
         {{ render_field(form.url) }}
+        <div id="url_msg"></div>
       </div>
     </div>
     <div class="form-group">
       <div class="col-sm-12">
         {{ render_field(form.email_ad) }}
+        <div id="email_msg"></div>
       </div>
     </div>
     <div class="form-group">
       <div class="col-sm-12">
         {{ render_field(form.email_pass) }}
+        <div id="passwd_msg"></div>
       </div>
     </div>
     <div class="form-group">
       <div class="col-sm-12">
-        <button type="submit" class="btn btn-primary btn-med" id="load" data-loading-text="Scraping, every slide takes 3 seconds so your download will begin shortly!">Scrape</button>
+        <input type="submit" class="btn btn-primary btn-med" id="scrap-button" data-loading-text="Scraping, every slide takes 3 seconds so your download will begin shortly!" value="Scrape">
+        <button type="button" class="btn btn-primary btn-med" id="refresh-button">Refresh</button>
       </div>
     </div>
   </form>
+  <div style="font-size: 18px; font-weight: bold;" align="center" id="log"></div>
 </div>
 {% endblock %}
