@@ -27,7 +27,6 @@ class SudokuController
     public $size = 0;
     public $hash = []; // Conflict check
     public $file_names = ["sampleInput_4x4.txt", "sampleInput_9x9.txt"];
-    public $file_chosen;
 
     public function index()
     {
