@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Landing Page template</title>
+    <meta name="generator" content="Bootply" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+{#    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">#}
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center v-center">
+                <br>
+                <br>
+                <br>
+                <h1>Student Course Management System</h1>
+                <p class="lead">Login - By Hearst Magazines</p>
+                <br>
+                <br>
+                <form class="col-lg-12" action="{{url_for('login')}}" method="POST">
+                    <div class="input-group" style="width:500px;text-align:left;margin:0 auto;margin-bottom: 15px">
+                        Email:
+                        <input class="form-control input-lg" placeholder="Enter your email address" type="email" name="email">
+                    </div>
+                    <div class="input-group" style="width:500px;text-align:left;margin:0 auto;margin-bottom: 15px">
+                        Password:
+                        <input class="form-control input-lg" placeholder="Enter your password" type="password" name="password">
+                    </div>
+                    <div class="input-group" style="width:500px;text-align:left;margin:0 auto;margin-bottom: 15px">
+                        <span class="input-group-btn">
+                            <input class="btn btn-lg btn-primary" type="submit" value="Submit"> &nbsp;
+                            <a href="{{ url_for('register') }}" class="btn btn-lg btn-default">Sign Up</a>
+                        </span>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+        <!-- /row -->
+
+        <br>
+        <br>
+        <br>
+    </div>
+    <!-- /container full -->
+
+
+    <!-- script references -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+</body>
+</html>
