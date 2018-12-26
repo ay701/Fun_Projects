@@ -115,7 +115,7 @@ def add_course():
 
 
 # Delete a course
-@app.route('/course/delete/<int:course_id>', methods=['POST'])
+@app.route('/course/delete/<int:course_id>', methods=['DELETE'])
 def delete_course(course_id):
     course = Course.query.filter_by(id=course_id).first()
 
